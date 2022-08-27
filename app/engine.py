@@ -7,7 +7,7 @@ from sqlalchemy.orm import close_all_sessions, declarative_base, sessionmaker
 
 logger = getLogger(__name__)
 
-async_engine = create_async_engine("postgresql+asyncpg://@localhost:5432/sqltest", echo=True)
+async_engine = create_async_engine("postgresql+asyncpg://@localhost:5432/sqltest", echo=True, echo_pool='debug')
 async_session: Callable[..., AsyncSession] = sessionmaker(
     autocommit=False,
     autoflush=False,

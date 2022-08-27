@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, FastAPI
 from sqlalchemy import select
 
@@ -8,8 +10,11 @@ from app.models import Tenant, User
 api = FastAPI()
 
 
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+
 async def insert_all():
-    users = [
+    initial_data = [
         User(name="Walter"),
         User(name="Eric"),
         User(name="John"),
@@ -20,9 +25,17 @@ async def insert_all():
     # Sometimes the "System Accounts" are not inserted.
     # It may be related to the cache?
     # It always works when restarting the application manually (not relying on the server's reload)
-    users.extend(system_accounts)
+    initial_data.extend(system_accounts)
+    print("======= LENGTH START")
+    print(f"Initial Data List Length: {len(initial_data)}")
+    print("======= LENGTH END")
     async with async_session() as session:
-        session.add_all(users)
+        session.add_all(initial_data)
+        print(f"================== Session State Start")
+        print(f"New Session Objects: {session.new}")
+        print(f"Dirty Session Objects: {session.dirty}")
+        print(f"Deleted Session Objects: {session.deleted}")
+        print(f"================== Session State End")
         await session.commit()
 
 

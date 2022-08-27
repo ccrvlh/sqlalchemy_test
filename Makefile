@@ -1,3 +1,6 @@
+run:
+	uvicorn app.asgi:api --reload
+
 drop:
 	curl -X DELETE http://localhost:8000/db | jq
 
